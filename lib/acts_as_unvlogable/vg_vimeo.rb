@@ -23,19 +23,33 @@ class VgVimeo
   end
   
   def thumbnail
-    REXML::XPath.first( @feed, "//thumbnail_medium" )[0].to_s
+    REXML::XPath.first( @feed, "//thumbnail_large" )[0].to_s
   end
   
   def duration
     REXML::XPath.first( @feed, "//duration" )[0].to_s.to_i
   end
-  
+
+  def width
+    REXML::XPath.first( @feed, "//width" )[0].to_s.to_i
+  end
+
+  def height
+    REXML::XPath.first( @feed, "//height" )[0].to_s.to_i
+  end
+
   def embed_url
     "http://vimeo.com/moogaloop.swf?clip_id=#{@video_id}&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=1&amp;color=ffffff&amp;fullscreen=1&amp;autoplay=0&amp;loop=0"
   end
   
-  def embed_html(width=425, height=344, options={})
-    "<object width='#{width}' height='#{height}'><param name='movie' value='#{embed_url}'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='#{embed_url}' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='#{width}' height='#{height}'></embed></object>"
+  def embed_html(width, height, options={})
+    if self.width > width
+      height = width * self.height / self.width
+    else
+      width =  self.width
+      height = self.height
+    end
+    "<iframe src='http://player.vimeo.com/video/#{@video_id}' width='#{width}' height='#{height}' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
   end
 
   def flv

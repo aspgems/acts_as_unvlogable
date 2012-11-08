@@ -26,7 +26,7 @@ class VgYoutube
   def duration
     @details.duration
   end
-  
+
   def embed_url
     @details.media_content.first.url if @details.noembed == false
   end
@@ -36,8 +36,9 @@ class VgYoutube
   #   http://code.google.com/intl/en/apis/youtube/player_parameters.html
   #   Use them in options (ex {:rel => 0, :color1 => '0x333333'})
   # 
-  def embed_html(width=425, height=344, options={})
-    "<object width='#{width}' height='#{height}'><param name='movie' value='#{embed_url}#{options.map {|k,v| "&#{k}=#{v}"}}'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='#{embed_url}#{options.map {|k,v| "&#{k}=#{v}"}}' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='#{width}' height='#{height}'></embed></object>" if @details.noembed == false
+  def embed_html(width, height, options={})
+    height = (@details.widescreen? ? width * 9/16 : width * 3/4) + 25
+    @details.embed_html5(:width => width, :height => height)
   end
   
   
